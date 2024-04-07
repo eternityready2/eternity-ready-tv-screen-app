@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.EternityReadyTV" parent="@style/Theme.Leanback" />
+</resources>
