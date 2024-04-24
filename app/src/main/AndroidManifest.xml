@@ -23,10 +23,10 @@
         android:theme="@style/Theme.EternityReadyTV">
         <activity
             android:name=".MainActivity"
-            android:banner="@drawable/app_icon_your_company"
+            android:banner="@drawable/er_tv_svg"
             android:exported="true"
-            android:icon="@drawable/app_icon_your_company"
-            android:logo="@drawable/app_icon_your_company"
+            android:icon="@drawable/er_tv_svg"
+            android:logo="@drawable/er_tv_svg"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

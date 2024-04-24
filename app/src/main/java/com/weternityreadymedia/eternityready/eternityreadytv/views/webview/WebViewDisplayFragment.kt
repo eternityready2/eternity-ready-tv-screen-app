@@ -47,10 +47,11 @@ class WebViewDisplayFragment: Fragment() {
         webView.isFocusable = true
         webView.clearCache(true)
 
-        webView.setWebChromeClient(object : VideoEnabledWebChromeClient(webView, view.findViewById(R.id.fullscreen_html5_player_view)) {
-            override fun onProgressChanged(view: WebView, newProgress: Int) {
-                super.onProgressChanged(view, newProgress)
-            }
+        webView.setWebChromeClient(object : VideoEnabledWebChromeClient(
+            webView,
+            view.findViewById(R.id.fullscreen_html5_player_view),
+            view.findViewById(R.id.progress_bar)
+        ) {
         })
 
         webView.setWebViewClient(object : WebViewClient() {
