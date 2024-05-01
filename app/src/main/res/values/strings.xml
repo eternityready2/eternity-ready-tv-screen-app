@@ -19,4 +19,9 @@
     <string name="dismiss_error">Dismiss</string>
     <string name="network_error">network_error</string>
     <string name="retry">Retry</string>
+    <string name="logo_desc">eternity logo</string>
+    <string name="categories">Categories</string>
+    <string name="live_tv">Live TV</string>
+    <string name="on_demand">On Demand</string>
+    <string name="search">Search</string>
 </resources>

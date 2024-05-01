@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.weternityreadymedia.eternityready.eternityreadytv.views.home.CategoriesFragment
 
 /**
  * BrowseErrorActivity shows how to use ErrorFragment.
@@ -25,7 +26,7 @@ class BrowseErrorActivity : FragmentActivity() {
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_browse_fragment, MainFragment())
+                .replace(R.id.container, CategoriesFragment())
                 .commitNow()
         }
         testError()
@@ -35,13 +36,13 @@ class BrowseErrorActivity : FragmentActivity() {
         mErrorFragment = ErrorFragment()
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.main_browse_fragment, mErrorFragment)
+            .add(R.id.container, mErrorFragment)
             .commit()
 
         mSpinnerFragment = SpinnerFragment()
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.main_browse_fragment, mSpinnerFragment)
+            .add(R.id.container, mSpinnerFragment)
             .commit()
 
         val handler = Handler(Looper.myLooper()!!)

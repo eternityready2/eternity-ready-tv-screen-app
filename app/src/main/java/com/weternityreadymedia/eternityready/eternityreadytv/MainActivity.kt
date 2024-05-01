@@ -3,7 +3,8 @@ package com.weternityreadymedia.eternityready.eternityreadytv
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import com.weternityreadymedia.eternityready.eternityreadytv.LoadingScreen.NotifyActivityFetchFinished
+import com.weternityreadymedia.eternityready.eternityreadytv.views.home.LoadingScreen
+import com.weternityreadymedia.eternityready.eternityreadytv.views.home.LoadingScreen.NotifyActivityFetchFinished
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,14 +21,14 @@ class MainActivity : FragmentActivity(), NotifyActivityFetchFinished {
         }
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.main_browse_fragment, LoadingScreen(), LoadingScreen.TAG)
+                .replace(R.id.container, LoadingScreen(), LoadingScreen.TAG)
                 .commitNow()
         }
     }
 
     override fun loadingDone() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_browse_fragment, MainFragment(), MainFragment.TAG)
+            .replace(R.id.container, MainFragment(), MainFragment.TAG)
             .commitNow()
     }
 }

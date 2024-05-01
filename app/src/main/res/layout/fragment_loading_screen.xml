@@ -27,6 +27,6 @@
         android:layout_gravity="center|bottom"
         android:text="@string/retry"
         android:background="@color/search_opaque"
-        android:textColor="@color/lb_tv_white"
+        android:textColor="@android:color/white"
         android:visibility="invisible"/>
 </FrameLayout>

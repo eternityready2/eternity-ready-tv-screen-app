@@ -14,7 +14,7 @@ class WebviewActivity: FragmentActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(
-                    R.id.main_browse_fragment,
+                    R.id.container,
                     WebViewDisplayFragment.newInstance(url.toString()),
                     WebViewDisplayFragment.TAG
                 )

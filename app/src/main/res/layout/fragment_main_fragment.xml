@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/black"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxHeight="200dp"
+        android:maxWidth="250dp"
+        android:id="@+id/app_logo"
+        android:layout_margin="@dimen/top_actions_padding"
+        android:src="@drawable/logo_s"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container"
+        android:contentDescription="@string/logo_desc" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/actions_layout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="@dimen/top_actions_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container">
+
+        <Button
+            android:layout_width="170dp"
+            android:layout_height="50dp"
+            android:id="@+id/categories_live"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:drawableStart="@drawable/space_dashboard"
+            android:paddingHorizontal="10dp"
+            android:text="@string/categories"
+            android:drawableTint="@color/action_buttons_color"
+            android:textColor="@color/action_buttons_color"
+            android:background="@drawable/action_buttons_background"
+            app:drawableTint="@color/action_buttons_color"/>
+
+        <androidx.legacy.widget.Space
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+        <Button
+            android:layout_width="170dp"
+            android:layout_height="50dp"
+            android:id="@+id/on_demand"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:drawableStart="@drawable/play_circle"
+            android:paddingHorizontal="10dp"
+            android:text="@string/on_demand"
+            android:drawableTint="@color/action_buttons_color"
+            android:textColor="@color/action_buttons_color"
+            android:background="@drawable/action_buttons_background"
+            app:drawableTint="@color/action_buttons_color"/>
+
+        <androidx.legacy.widget.Space
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+        <Button
+            android:layout_width="170dp"
+            android:layout_height="50dp"
+            android:id="@+id/search"
+            android:focusableInTouchMode="true"
+            android:paddingHorizontal="10dp"
+            android:focusable="true"
+            android:drawableStart="@drawable/search_24"
+            android:text="@string/search"
+            android:drawableTint="@color/action_buttons_color"
+            android:textColor="@color/action_buttons_color"
+            android:background="@drawable/action_buttons_background"
+            app:drawableTint="@color/action_buttons_color"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:context=".MainActivity"
+        tools:deviceIds="tv"
+        tools:ignore="MergeRootFrame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/actions_layout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

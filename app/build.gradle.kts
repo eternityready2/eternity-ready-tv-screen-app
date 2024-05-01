@@ -48,4 +48,10 @@ dependencies {
     implementation(libs.retroGson)
     implementation(libs.coroutine)
     implementation(libs.lifecycleScope)
+    implementation(files("../libs/tv-programming.aar"))
+    implementation(libs.threetenabp)
+    implementation(libs.opencsv)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.material)
 }

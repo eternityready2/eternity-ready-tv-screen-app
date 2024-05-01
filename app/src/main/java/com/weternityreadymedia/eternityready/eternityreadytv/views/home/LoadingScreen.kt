@@ -1,4 +1,4 @@
-package com.weternityreadymedia.eternityready.eternityreadytv
+package com.weternityreadymedia.eternityready.eternityreadytv.views.home
 
 import android.content.Context
 import android.os.Bundle
@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.weternityreadymedia.eternityready.eternityreadytv.R
 import com.weternityreadymedia.eternityready.eternityreadytv.viewmodel.PresenterViewModel
 import com.weternityreadymedia.eternityready.eternityreadytv.viewmodel.PresenterViewModel.LoadingState
 import kotlinx.coroutines.launch
