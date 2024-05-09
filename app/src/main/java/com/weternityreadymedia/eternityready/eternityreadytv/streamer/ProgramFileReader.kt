@@ -37,7 +37,8 @@ suspend fun readDataFromFile(
             SimpleChannel(
                 id = record[0],
                 name = SpannedString(record[1]),
-                imageUrl = mapRecord?.logo
+                imageUrl = mapRecord?.logo,
+                channelNumber = record[0]
             )
         )
 

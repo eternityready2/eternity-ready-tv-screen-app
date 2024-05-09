@@ -4,4 +4,8 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowOverscan">true</item>
     </style>
+    
+    <style name="Theme.EternityReadyTV.SplashScreen">
+        <item name="android:windowBackground">@drawable/splash_screen_background</item>
+    </style>
 </resources>

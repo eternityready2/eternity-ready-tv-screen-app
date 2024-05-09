@@ -62,13 +62,13 @@ class LoadingScreen: Fragment() {
         val progressBar = view?.findViewById<ProgressBar>(R.id.progress_bar)
         val retryButton = view?.findViewById<Button>(R.id.retry_button)
 
-        viewModel.liveData.observe(this) {
-            if (viewModel.loadingState == LoadingState.LOADED) {
+        viewModel.setOnLoadCompleteListener { loadingState ->
+            if (loadingState == LoadingState.LOADED) {
                 val parentActivity = activity
                 if (parentActivity != null && parentActivity is NotifyActivityFetchFinished) {
                     parentActivity.loadingDone()
                 }
-            } else if (viewModel.loadingState == LoadingState.ERROR) {
+            } else if (loadingState == LoadingState.ERROR) {
                 imageView?.visibility = View.VISIBLE
                 progressBar?.visibility = View.GONE
                 retryButton?.visibility = View.VISIBLE
@@ -87,7 +87,7 @@ class LoadingScreen: Fragment() {
     }
 
     override fun onStop() {
-        viewModel.liveData.removeObservers(this)
+        viewModel.removeOnLoadCompleteListener()
         super.onStop()
     }
 

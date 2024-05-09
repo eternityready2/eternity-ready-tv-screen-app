@@ -124,7 +124,8 @@ class CategoriesFragment : BrowseSupportFragment() {
         isHeadersTransitionOnBackEnabled = true
 
         // set fastLane (or headers) background color
-        brandColor = ContextCompat.getColor(requireActivity(), R.color.fastlane_background)
+        // brandColor = ContextCompat.getColor(requireActivity(), R.color.fastlane_background)
+        brandColor = ContextCompat.getColor(requireActivity(), android.R.color.black)
         // set search icon color
         searchAffordanceColor = ContextCompat.getColor(requireActivity(), R.color.search_opaque)
     }
@@ -134,10 +135,10 @@ class CategoriesFragment : BrowseSupportFragment() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         val cardPresenter = CardPresenter()
 
-        for (channelName in viewModel.liveData.value?.displayChannels?.keys!!) {
+        for (channelName in viewModel.channelsLiveData.value?.displayChannels?.keys!!) {
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
 
-            for (channel in viewModel.liveData.value!!.displayChannels[channelName]!!) {
+            for (channel in viewModel.channelsLiveData.value!!.displayChannels[channelName]!!) {
                 listRowAdapter.add(channel)
             }
 
@@ -163,7 +164,7 @@ class CategoriesFragment : BrowseSupportFragment() {
 
 //        setOnSearchClickedListener {
 //            val intent = Intent(requireActivity(), SearchActivity::class.java).apply {
-//                putExtra(SearchActivity.SEARCHABLE_LIST, viewModel.liveData.value?.channels?.toTypedArray())
+//                putExtra(SearchActivity.SEARCHABLE_LIST, viewModel.channelsLiveData.value?.channels?.toTypedArray())
 //            }
 //            startActivity(intent)
 //        }

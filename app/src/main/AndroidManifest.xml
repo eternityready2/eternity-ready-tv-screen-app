@@ -24,6 +24,7 @@
         android:theme="@style/Theme.EternityReadyTV">
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.EternityReadyTV.SplashScreen"
             android:banner="@drawable/er_tv_svg"
             android:exported="true"
             android:icon="@drawable/er_tv_svg"

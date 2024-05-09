@@ -24,4 +24,5 @@
     <string name="live_tv">Live TV</string>
     <string name="on_demand">On Demand</string>
     <string name="search">Search</string>
+    <string name="click_to_watch">Click to watch</string>
 </resources>

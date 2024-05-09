@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.egeniq.androidtvprogramguide.entity.ProgramGuideSchedule
 import com.weternityreadymedia.eternityready.eternityreadytv.BuildConfig
 import com.weternityreadymedia.eternityready.eternityreadytv.api.ChannelsList
+import com.weternityreadymedia.eternityready.eternityreadytv.api.OnDemandList
 import com.weternityreadymedia.eternityready.eternityreadytv.data.Repository
 import com.weternityreadymedia.eternityready.eternityreadytv.data.SimpleChannel
 import com.weternityreadymedia.eternityready.eternityreadytv.data.SimpleProgram
@@ -21,13 +22,17 @@ import java.io.IOException
 
 class PresenterViewModel: ViewModel() {
 
-    private val _liveData: MutableLiveData<ChannelsList> = MutableLiveData()
+    private val _channelsLiveData: MutableLiveData<ChannelsList> = MutableLiveData()
+    private val _onDemandLiveData: MutableLiveData<OnDemandList> = MutableLiveData()
 
-    val liveData: LiveData<ChannelsList> = _liveData
-    var loadingState: LoadingState = LoadingState.IDLE
-        private set
+    val channelsLiveData: LiveData<ChannelsList> = _channelsLiveData
+    val onDemandLiveData: LiveData<OnDemandList> = _onDemandLiveData
+
+    private var loadingState: LoadingState = LoadingState.IDLE
 
     private var readScheduleData: Pair<List<SimpleChannel>, Map<String, List<ProgramGuideSchedule<SimpleProgram>>>>? = null
+
+    private var onLoadComplete: ((state: LoadingState) -> Unit)? = null
 
     suspend fun getData() {
         val data = withContext(Dispatchers.IO) {
@@ -49,7 +54,33 @@ class PresenterViewModel: ViewModel() {
             loadingState = LoadingState.LOADED
         }
 
-        _liveData.value = data
+        _channelsLiveData.value = data
+        getOnDemand()
+    }
+
+    private suspend fun getOnDemand() {
+        val data = withContext(Dispatchers.IO) {
+            try {
+                val remoteData = Repository.apiLoader.fetchOnDemand()
+                remoteData
+            } catch (exception: HttpException) {
+                if (BuildConfig.DEBUG) Log.e("exception", exception.message.toString())
+                loadingState = LoadingState.ERROR
+                OnDemandList(listOf())
+            } catch (exception: IOException) {
+                if (BuildConfig.DEBUG) Log.e("exception", exception.message.toString())
+                loadingState = LoadingState.ERROR
+                OnDemandList(listOf())
+            }
+        }
+
+        if (data.channels.isNotEmpty() && loadingState == LoadingState.LOADED) {
+            loadingState = LoadingState.LOADED
+        }
+
+        _onDemandLiveData.value = data
+
+        onLoadComplete?.invoke(loadingState)
     }
 
     suspend fun getSchedulingData(
@@ -59,13 +90,21 @@ class PresenterViewModel: ViewModel() {
     ): Pair<List<SimpleChannel>, Map<String, List<ProgramGuideSchedule<SimpleProgram>>>> = run {
         if (readScheduleData == null || readScheduleData!!.first.isEmpty()) {
             val dataValue = Repository.openAndReadRawFile(
-                context, localDate, zoneId, channelListToMap(liveData.value?.channels)
+                context, localDate, zoneId, channelListToMap(channelsLiveData.value?.channels)
             )
             readScheduleData = dataValue
             dataValue
         } else {
             readScheduleData!!
         }
+    }
+
+    fun setOnLoadCompleteListener(onLoadComplete: (state: LoadingState) -> Unit) {
+        this.onLoadComplete = onLoadComplete
+    }
+
+    fun removeOnLoadCompleteListener() {
+        this.onLoadComplete = null
     }
 
     enum class LoadingState {

@@ -11,4 +11,7 @@ interface TvApi {
 
     @GET("a/android-app-data.json")
     suspend fun fetchData() : List<Channel>
+
+    @GET("a/on_demand.json")
+    suspend fun fetchOnDemand() : OnDemandList
 }

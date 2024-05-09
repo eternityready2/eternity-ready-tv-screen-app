@@ -34,6 +34,9 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
 
     private lateinit var viewModel: PresenterViewModel
 
+    override val USE_MILITARY_TIME: Boolean
+        get() = false
+
     override fun isTopMenuVisible(): Boolean = false
 
     override fun requestRefresh() {
@@ -89,12 +92,14 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
             return
         }
 
-        if (programGuideSchedule.isCurrentProgram) {
-            val intent = Intent(requireActivity(), WebviewActivity::class.java).apply {
-                putExtra(WebViewDisplayFragment.URL_KEY, innerSchedule?.url)
-            }
-            startActivity(intent)
-        } /*else {
+        val intent = Intent(requireActivity(), WebviewActivity::class.java).apply {
+            putExtra(WebViewDisplayFragment.URL_KEY, innerSchedule?.url)
+        }
+        startActivity(intent)
+
+        /*if (programGuideSchedule.isCurrentProgram) {
+
+        } else {
             Toast.makeText(context, "Open detail page", Toast.LENGTH_LONG).show()
         }*/
 

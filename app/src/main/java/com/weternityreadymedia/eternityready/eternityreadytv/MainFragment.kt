@@ -19,6 +19,10 @@ class MainFragment : Fragment() {
         val TAG: String = MainFragment::class.java.name
     }
 
+    interface OnDemandSelected {
+        fun onDemandSelected()
+    }
+
     private lateinit var viewModel: PresenterViewModel
 
     override fun onAttach(context: Context) {
@@ -32,7 +36,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_main_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,12 +51,17 @@ class MainFragment : Fragment() {
     private fun initializeButtons(view: View) {
         view.findViewById<Button>(R.id.search).setOnClickListener {
             val intent = Intent(requireActivity(), SearchActivity::class.java).apply {
-                putExtra(SearchActivity.SEARCHABLE_LIST, viewModel.liveData.value?.channels?.toTypedArray())
+                putExtra(SearchActivity.SEARCHABLE_LIST, viewModel.channelsLiveData.value?.channels?.toTypedArray())
             }
             startActivity(intent)
         }
 
-        view.findViewById<Button>(R.id.on_demand).setOnClickListener {  }
+        view.findViewById<Button>(R.id.on_demand).setOnClickListener {
+            val parentActivity = activity
+            if (parentActivity != null && parentActivity is OnDemandSelected) {
+                parentActivity.onDemandSelected()
+            }
+        }
 
         view.findViewById<Button>(R.id.categories_live).apply {
             setOnClickListener {
