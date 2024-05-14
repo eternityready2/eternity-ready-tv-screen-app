@@ -26,6 +26,8 @@ import com.weternityreadymedia.eternityready.eternityreadytv.views.webview.Webvi
 import com.weternityreadymedia.eternityready.eternityreadytv.R as eternityR
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
+import java.util.Locale
 
 class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
     companion object {
@@ -36,6 +38,12 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
 
     override val USE_MILITARY_TIME: Boolean
         get() = false
+
+    override val DISPLAY_TIMEZONE: ZoneId
+        get() = ZoneId.systemDefault()
+
+    override val DISPLAY_LOCALE: Locale
+        get() = Locale.getDefault()
 
     override fun isTopMenuVisible(): Boolean = false
 

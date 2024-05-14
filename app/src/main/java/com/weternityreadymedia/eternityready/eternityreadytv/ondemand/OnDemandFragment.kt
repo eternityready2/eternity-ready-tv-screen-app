@@ -12,11 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.weternityreadymedia.eternityready.eternityreadytv.R
 import com.weternityreadymedia.eternityready.eternityreadytv.data.OnDemand
 import com.weternityreadymedia.eternityready.eternityreadytv.ondemand.adapters.OnDemandContentRecyclerViewAdapter
 import com.weternityreadymedia.eternityready.eternityreadytv.ondemand.adapters.OnDemandItemsRecyclerViewAdapter.OnItemFocusedListener
 import com.weternityreadymedia.eternityready.eternityreadytv.ondemand.adapters.OnDemandRecyclerViewAdapter
+import com.weternityreadymedia.eternityready.eternityreadytv.ondemand.helper.CustomLinearSnapHelper
 import com.weternityreadymedia.eternityready.eternityreadytv.viewmodel.PresenterViewModel
 import com.weternityreadymedia.eternityready.eternityreadytv.views.webview.WebViewDisplayFragment
 import com.weternityreadymedia.eternityready.eternityreadytv.views.webview.WebviewActivity
@@ -61,7 +63,7 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
         recyclerViewCategoriesAdapter.setOnCategoryFocused { _: String, position: Int ->
             val moreDetailsLayout = view.findViewById<ViewGroup>(R.id.on_demand_more_details_layout)
             if (moreDetailsLayout.visibility == ViewGroup.VISIBLE) moreDetailsLayout.visibility = ViewGroup.INVISIBLE
-            view.findViewById<RecyclerView>(R.id.recycler_category_items).smoothScrollToPosition(position)
+            (view.findViewById<RecyclerView>(R.id.recycler_category_items).layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
         }
 
         val recyclerViewCategories = view.findViewById<RecyclerView>(R.id.on_demand_categories)
@@ -73,6 +75,9 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
 
         val recyclerViewItems = view.findViewById<RecyclerView>(R.id.recycler_category_items)
         recyclerViewItems.adapter = recyclerViewCategoryItemsAdapter
+
+        val snapHelper: SnapHelper = CustomLinearSnapHelper()
+        snapHelper.attachToRecyclerView(recyclerViewItems)
     }
 
     override fun onItemFocused(data: OnDemand?) {
@@ -88,7 +93,9 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
 
     override fun onItemClicked(url: String?) {
         val intent = Intent(requireActivity(), WebviewActivity::class.java).apply {
-            putExtra(WebViewDisplayFragment.URL_KEY, url)
+            val containsIframe = url?.contains("<iframe", ignoreCase = true) ?: false
+            if (containsIframe) putExtra(WebViewDisplayFragment.DATA_URL_KEY, url)
+            else putExtra(WebViewDisplayFragment.URL_KEY, url)
         }
         startActivity(intent)
     }

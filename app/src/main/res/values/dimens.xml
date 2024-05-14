@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="top_actions_padding">30dp</dimen>
+    <dimen name="widgets_padding">32dp</dimen>
+    <dimen name="widgets_margin">32dp</dimen>
     <dimen name="category_text_style">18sp</dimen>
+    <dimen name="lb_browse_rows_margin_top">20dp</dimen>
 </resources>

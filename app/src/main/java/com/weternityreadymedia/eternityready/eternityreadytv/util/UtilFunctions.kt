@@ -72,3 +72,13 @@ fun channelListToMap(channels: List<Channel>?): Map<String?, Channel?> = run {
     }
     channelMap
 }
+
+fun findLinksInText(text: String): List<String> {
+    val regex = """\bhttps?://\S+\b""".toRegex()
+    return regex.findAll(text).map { it.value }.toList()
+}
+
+fun isYouTubeLink(link: String): Boolean {
+    val regex = """^(https?://)?(www\.)?(youtube\.com|youtu\.be)/.*$""".toRegex()
+    return regex.matches(link)
+}

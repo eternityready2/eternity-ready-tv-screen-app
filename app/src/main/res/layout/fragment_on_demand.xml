@@ -10,31 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxHeight="200dp"
-            android:maxWidth="250dp"
-            android:id="@+id/app_logo"
-            android:layout_margin="@dimen/top_actions_padding"
-            android:src="@drawable/logo_s"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/on_demand_categories"
-            android:contentDescription="@string/logo_desc" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/on_demand_categories"
-            android:layout_margin="@dimen/top_actions_padding"
+            android:layout_marginHorizontal="@dimen/widgets_padding"
             android:orientation="horizontal"
             android:scrollbars="none"
+            android:layout_marginBottom="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/app_logo"
+            app:layout_constraintTop_toTopOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/on_demand_category"
             tools:itemCount="10"/>
@@ -42,7 +28,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/top_actions_padding"
+            android:layout_marginHorizontal="@dimen/widgets_padding"
             android:orientation="vertical"
             android:scrollbars="none"
             android:id="@+id/recycler_category_items"
@@ -58,7 +44,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/on_demand_more_details_layout"
         android:background="@android:color/black"
-        android:paddingTop="20dp"
+        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="invisible"
@@ -74,6 +60,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/detail_metadata"
                 tools:text="NPO Politiek" />
 
             <TextView
@@ -84,6 +71,7 @@
                 android:gravity="start"
                 app:layout_constraintStart_toStartOf="@id/detail_title"
                 app:layout_constraintTop_toBottomOf="@id/detail_title"
+                app:layout_constraintBottom_toTopOf="@id/detail_description"
                 tools:text="EenVandaag • Wo 30 jan 20:00 • AVROTROS" />
 
             <TextView
@@ -95,31 +83,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/detail_title"
                 app:layout_constraintTop_toBottomOf="@id/detail_metadata"
-                tools:text="This is the description of the item.\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="7dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detail_description"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:text="@string/click_to_watch"/>
-                <Space
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/play_circle"/>
-            </LinearLayout>
+                tools:text="This is the description of the item.\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

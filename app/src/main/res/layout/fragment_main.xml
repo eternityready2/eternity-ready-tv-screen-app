@@ -12,7 +12,7 @@
         android:maxHeight="200dp"
         android:maxWidth="250dp"
         android:id="@+id/app_logo"
-        android:layout_margin="@dimen/top_actions_padding"
+        android:layout_margin="@dimen/widgets_padding"
         android:src="@drawable/logo_s"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -27,14 +27,14 @@
         android:id="@+id/actions_layout"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_margin="@dimen/top_actions_padding"
+        android:layout_margin="@dimen/widgets_padding"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/fragment_container">
 
         <Button
-            android:layout_width="170dp"
+            android:layout_width="160dp"
             android:layout_height="50dp"
             android:id="@+id/categories_live"
             android:focusableInTouchMode="true"
@@ -54,7 +54,7 @@
             android:focusableInTouchMode="false"/>
 
         <Button
-            android:layout_width="170dp"
+            android:layout_width="160dp"
             android:layout_height="50dp"
             android:id="@+id/on_demand"
             android:focusableInTouchMode="true"
@@ -74,7 +74,7 @@
             android:focusableInTouchMode="false"/>
 
         <Button
-            android:layout_width="170dp"
+            android:layout_width="160dp"
             android:layout_height="50dp"
             android:id="@+id/search"
             android:focusableInTouchMode="true"

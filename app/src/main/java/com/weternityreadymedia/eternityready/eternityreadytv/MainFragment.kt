@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.weternityreadymedia.eternityready.eternityreadytv.ondemand.OnDemandFragment
 import com.weternityreadymedia.eternityready.eternityreadytv.viewmodel.PresenterViewModel
 import com.weternityreadymedia.eternityready.eternityreadytv.views.home.CategoriesFragment
 import com.weternityreadymedia.eternityready.eternityreadytv.views.schedule.TvSchedulingFragment
@@ -17,10 +18,6 @@ import com.weternityreadymedia.eternityready.eternityreadytv.views.search.Search
 class MainFragment : Fragment() {
     companion object {
         val TAG: String = MainFragment::class.java.name
-    }
-
-    interface OnDemandSelected {
-        fun onDemandSelected()
     }
 
     private lateinit var viewModel: PresenterViewModel
@@ -57,10 +54,10 @@ class MainFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.on_demand).setOnClickListener {
-            val parentActivity = activity
-            if (parentActivity != null && parentActivity is OnDemandSelected) {
-                parentActivity.onDemandSelected()
-            }
+            childFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, OnDemandFragment.instance(), OnDemandFragment.TAG)
+                .commit()
         }
 
         view.findViewById<Button>(R.id.categories_live).apply {
