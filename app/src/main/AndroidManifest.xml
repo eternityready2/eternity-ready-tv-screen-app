@@ -19,21 +19,21 @@
         android:name=".application.EternityReadyTvApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:banner="@drawable/er_tv_svg"
+        android:logo="@drawable/er_tv_svg"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.EternityReadyTV">
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.EternityReadyTV.SplashScreen"
-            android:banner="@drawable/er_tv_svg"
             android:exported="true"
-            android:icon="@drawable/er_tv_svg"
-            android:logo="@drawable/er_tv_svg"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
