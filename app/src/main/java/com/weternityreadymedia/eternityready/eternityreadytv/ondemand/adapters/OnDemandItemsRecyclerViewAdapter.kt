@@ -39,7 +39,7 @@ class OnDemandItemsRecyclerViewAdapter() : RecyclerView.Adapter<ViewHolder>() {
         holder.textView.text = item.title
         holder.onDemandItem = item
         Glide.with(holder.view.context)
-            .load("https://eternityready.tv/live-tv/static/img/on_demand/${item.logo}")
+            .load(item.logo)
             .placeholder(R.drawable.loading)
             .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
