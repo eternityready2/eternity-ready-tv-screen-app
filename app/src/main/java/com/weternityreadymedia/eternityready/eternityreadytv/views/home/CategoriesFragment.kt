@@ -179,18 +179,18 @@ class CategoriesFragment : BrowseSupportFragment() {
         ) {
 
             if (item is Channel) {
-                val intent = Intent(activity!!, WebviewActivity::class.java).apply {
+                val intent = Intent(requireActivity(), WebviewActivity::class.java).apply {
                     putExtra(WebViewDisplayFragment.URL_KEY, item.url)
                 }
                 startActivity(intent)
             }
 
             if (item is Movie) {
-                val intent = Intent(activity!!, DetailsActivity::class.java)
+                val intent = Intent(requireActivity(), DetailsActivity::class.java)
                 intent.putExtra(DetailsActivity.MOVIE, item)
 
                 val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    activity!!,
+                    requireActivity(),
                     (itemViewHolder.view as ImageCardView).mainImageView,
                     DetailsActivity.SHARED_ELEMENT_NAME
                 )
@@ -250,7 +250,7 @@ class CategoriesFragment : BrowseSupportFragment() {
             view.layoutParams = ViewGroup.LayoutParams(GRID_ITEM_WIDTH, GRID_ITEM_HEIGHT)
             view.isFocusable = true
             view.isFocusableInTouchMode = true
-            view.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.default_background))
+            view.setBackgroundColor(ContextCompat.getColor(requireActivity(), R.color.default_background))
             view.setTextColor(Color.WHITE)
             view.gravity = Gravity.CENTER
             return ViewHolder(view)

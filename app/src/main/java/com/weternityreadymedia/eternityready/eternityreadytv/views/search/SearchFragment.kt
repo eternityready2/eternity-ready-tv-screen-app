@@ -97,12 +97,14 @@ class SearchFragment: SearchSupportFragment(), SearchSupportFragment.SearchResul
         return true
     }
 
-    fun isKeyBoardVisible() = ViewCompat.getRootWindowInsets(view!!)?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
+    fun isKeyBoardVisible() = 
+        ViewCompat.getRootWindowInsets(requireView())
+            ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
 
     private fun setupListeners() {
         setOnItemViewClickedListener { _, item, _, _ ->
             if (item is Channel) {
-                val intent = Intent(activity!!, WebviewActivity::class.java).apply {
+                val intent = Intent(requireActivity(), WebviewActivity::class.java).apply {
                     putExtra(WebViewDisplayFragment.URL_KEY, item.url)
                 }
                 startActivity(intent)

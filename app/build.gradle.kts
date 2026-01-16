@@ -6,14 +6,14 @@ plugins {
 
 android {
     namespace = "com.weternityreadymedia.eternityready.eternityreadytv"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.weternityreadymedia.eternityready.eternityreadytv"
         minSdk = 21
-        targetSdk = 34
-        versionCode = 3
-        versionName = "1.1.0"
+        targetSdk = 36
+        versionCode = 4
+        versionName = "1.2.0"
 
     }
 
@@ -36,6 +36,13 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    configurations {
+        all {
+            exclude(group = "commons-logging", module = "commons-logging")
+            exclude(module = "httpclient")
+            exclude(group = "org.apache.httpcomponents")
+        }
     }
 }
 

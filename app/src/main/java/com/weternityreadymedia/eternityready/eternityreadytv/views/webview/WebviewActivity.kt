@@ -28,6 +28,7 @@ class WebviewActivity: FragmentActivity() {
         }
     }
 
+    /*
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_UP && event.keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             val currentFragment = supportFragmentManager.fragments.firstOrNull()
@@ -36,5 +37,16 @@ class WebviewActivity: FragmentActivity() {
             }
         }
         return super.dispatchKeyEvent(event)
+    }
+    */
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            val currentFragment = supportFragmentManager.fragments.firstOrNull()
+            if (currentFragment is WebViewDisplayFragment) {
+                currentFragment.handleKeyEvent()
+                return true
+            }
+        }
+        return super.onKeyUp(keyCode, event)
     }
 }
