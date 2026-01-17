@@ -61,8 +61,8 @@ class PresenterViewModel: ViewModel() {
     private suspend fun getOnDemand() {
         val data = withContext(Dispatchers.IO) {
             try {
-                val remoteData = Repository.apiLoader.fetchOnDemand()
-                remoteData
+                val remoteData = Repository.getOnDemand()
+                OnDemandList(remoteData)
             } catch (exception: HttpException) {
                 if (BuildConfig.DEBUG) Log.e("exception", exception.message.toString())
                 loadingState = LoadingState.ERROR
@@ -74,7 +74,7 @@ class PresenterViewModel: ViewModel() {
             }
         }
 
-        if (data.channels.isNotEmpty() && loadingState == LoadingState.LOADED) {
+        if ((data as OnDemandList).channels.isNotEmpty() && loadingState == LoadingState.LOADED) {
             loadingState = LoadingState.LOADED
         }
 

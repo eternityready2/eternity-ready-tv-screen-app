@@ -43,6 +43,43 @@ object Repository {
         }
     }
 
+    suspend fun getOnDemand(): List<OnDemand> {
+        return try {
+            val movieResponse = apiLoader.fetchMovies()
+            val musicResponse = apiLoader.fetchMusic()
+
+            val movies = movieResponse.movies.flatMap { movie ->
+                val categories = movie.categories ?: listOf("Uncategorized")
+                categories.map { category ->
+                    OnDemand(
+                        title = movie.title,
+                        logo = movie.thumbnail,
+                        url = movie.embed,
+                        description = movie.description,
+                        category = category
+                    )
+                }
+            }
+
+            val music = musicResponse.music.flatMap { musicItem ->
+                val categories = musicItem.categories ?: listOf("Music")
+                categories.map { category ->
+                    OnDemand(
+                        title = musicItem.title,
+                        logo = musicItem.thumbnail?.replace("http://", "https://"),
+                        url = musicItem.embed,
+                        description = musicItem.description,
+                        category = category
+                    )
+                }
+            }
+
+            movies + music
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
     suspend fun openAndReadRawFile(
         context: Context,
         localDate: LocalDate,
