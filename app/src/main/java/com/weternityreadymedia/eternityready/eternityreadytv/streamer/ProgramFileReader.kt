@@ -2,8 +2,9 @@ package com.weternityreadymedia.eternityready.eternityreadytv.streamer
 
 import android.text.SpannedString
 import com.egeniq.androidtvprogramguide.entity.ProgramGuideSchedule
-import com.opencsv.CSVReaderBuilder
 import com.weternityreadymedia.eternityready.eternityreadytv.data.Channel
+import com.weternityreadymedia.eternityready.eternityreadytv.data.ScheduleChannel
+import com.weternityreadymedia.eternityready.eternityreadytv.data.ScheduleShow
 import com.weternityreadymedia.eternityready.eternityreadytv.data.SimpleChannel
 import com.weternityreadymedia.eternityready.eternityreadytv.data.SimpleProgram
 import com.weternityreadymedia.eternityready.eternityreadytv.util.processScheduleData
@@ -11,50 +12,82 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
+import android.util.Log
 
-@Throws(IOException::class)
-suspend fun readDataFromFile(
-    stream: InputStream,
+suspend fun readDataFromJson(
+    schedules: List<ScheduleChannel>,
+    channelsMap: Map<String?, Channel?>,
     localDate: LocalDate,
-    zoneId: ZoneId,
-    tvChannelsMap: Map<String?, Channel?>,
-): Pair<List<SimpleChannel>, Map<String, List<ProgramGuideSchedule<SimpleProgram>>>> = withContext(Dispatchers.IO) {
-    val csvReader = CSVReaderBuilder(InputStreamReader(stream)).withSkipLines(1).build()
-    var record: Array<String>?
-
+    zoneId: ZoneId
+): Pair<List<SimpleChannel>, Map<String, List<ProgramGuideSchedule<SimpleProgram>>>> =
+withContext(Dispatchers.IO) {
     val channelSet = mutableSetOf<SimpleChannel>()
     val channelMap = mutableMapOf<String, MutableList<ProgramGuideSchedule<SimpleProgram>>>()
+    val todayDayOfWeek = localDate.dayOfWeek.toString()
 
-    while (true) {
-        record = csvReader.readNext() ?: break
-
-        val mapRecord = tvChannelsMap[record[0]]
+    schedules.forEachIndexed { index, scheduleChannel ->
+        val channelNumber = (index + 1).toString()
+        val channelMatch = channelsMap[channelNumber]
 
         channelSet.add(
             SimpleChannel(
-                id = record[0],
-                name = SpannedString(record[1]),
-                imageUrl = mapRecord?.logo,
-                channelNumber = record[0]
+                id = channelNumber,
+                name = SpannedString(scheduleChannel.channel_name ?: "Channel $channelNumber"),
+                imageUrl = channelMatch?.logo?.replace("http://", "https://"),
+                channelNumber = channelNumber
             )
         )
 
-        val schedule = processScheduleData(
-            id = record[0],
-            scheduleName = record[4],
-            localDate = localDate,
-            zoneId = zoneId,
-            startTime = record[2],
-            showLength = record[3].toDouble().toLong(),
-            description = mapRecord?.notes,
-            imageUrl = mapRecord?.logo,
-            url = mapRecord?.url,
-        )
+        scheduleChannel.shows.forEach { show ->
+            if (show.day?.lowercase() == todayDayOfWeek.lowercase() &&
+                show.start_time != null &&
+                show.end_time != null
+            ) {
+                Log.d(
+                    "ScheduleDebug",
+                    "Today=$todayDayOfWeek channel=$channelNumber name=${scheduleChannel.channel_name} show=${show.show_name} start=${show.start_time} end=${show.end_time}"
+                )
 
-        channelMap.getOrPut(record[0]) {mutableListOf()}.add(schedule)
+                val startTimeOnly = show.start_time.substringBeforeLast(":").padEnd(5, '0')
+                val durationMinutes = calculateDurationMinutes(show.start_time, show.end_time)
+
+                val schedule = processScheduleData(
+                    id = channelNumber,
+                    scheduleName = show.show_name ?: "Unknown Show",
+                    localDate = localDate,
+                    zoneId = zoneId,
+                    startTime = startTimeOnly,
+                    showLength = durationMinutes,
+                    description = channelMatch?.notes,
+                    imageUrl = channelMatch?.logo?.replace("http://", "https://"),
+                    url = channelMatch?.url
+                )
+
+                channelMap.getOrPut(channelNumber) { mutableListOf() }.add(schedule)
+            }
+        }
     }
+
     Pair(channelSet.toList(), channelMap)
+}
+
+private fun calculateDurationMinutes(startTime: String, endTime: String): Long {
+    val startParts = startTime.split(":")
+    val endParts = endTime.split(":")
+
+    if (startParts.size < 2 || endParts.size < 2) return 60L
+
+    val startHour = startParts[0].toIntOrNull() ?: 0
+    val startMin = startParts[1].toIntOrNull() ?: 0
+    val endHour = endParts[0].toIntOrNull() ?: 0
+    val endMin = endParts[1].toIntOrNull() ?: 0
+
+    val startTotal = startHour * 60 + startMin
+    val endTotal = endHour * 60 + endMin
+
+    return if (endTotal >= startTotal) {
+        (endTotal - startTotal).toLong()
+    } else {
+        (endTotal + 24 * 60 - startTotal).toLong()  // overnight
+    }
 }

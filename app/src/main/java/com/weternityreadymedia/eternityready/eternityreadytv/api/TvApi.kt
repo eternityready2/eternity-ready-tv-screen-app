@@ -2,6 +2,7 @@ package com.weternityreadymedia.eternityready.eternityreadytv.api
 import com.weternityreadymedia.eternityready.eternityreadytv.data.ChannelResponse
 import com.weternityreadymedia.eternityready.eternityreadytv.data.MovieResponse
 import com.weternityreadymedia.eternityready.eternityreadytv.data.MusicResponse
+import com.weternityreadymedia.eternityready.eternityreadytv.data.ScheduleChannel
 import retrofit2.http.GET
 
 interface TvApi {
@@ -18,4 +19,7 @@ interface TvApi {
 
     @GET("data/music.json")
     suspend fun fetchMusic() : MusicResponse
+
+    @GET("tv/tv-schedule-data.json")
+    suspend fun fetchSchedule(): List<ScheduleChannel>
 }

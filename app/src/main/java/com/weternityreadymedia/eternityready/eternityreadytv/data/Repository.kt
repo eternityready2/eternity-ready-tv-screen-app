@@ -6,13 +6,14 @@ import com.egeniq.androidtvprogramguide.entity.ProgramGuideSchedule
 import com.google.gson.GsonBuilder
 import com.weternityreadymedia.eternityready.eternityreadytv.R
 import com.weternityreadymedia.eternityready.eternityreadytv.api.TvApi
-import com.weternityreadymedia.eternityready.eternityreadytv.streamer.readDataFromFile
+import com.weternityreadymedia.eternityready.eternityreadytv.streamer.readDataFromJson
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.io.InputStream
+import android.util.Log
 
 object Repository {
 
@@ -80,21 +81,28 @@ object Repository {
         }
     }
 
+    suspend fun getSchedule(
+        channelsMap: Map<String?, Channel?>,
+        localDate: LocalDate,
+        zoneId: ZoneId
+    ): Pair<List<SimpleChannel>, Map<String, List<ProgramGuideSchedule<SimpleProgram>>>> {
+        return try {
+            val schedules = apiLoader.fetchSchedule()
+            readDataFromJson(schedules, channelsMap, localDate, zoneId)
+        } catch (e: Exception) {
+            Log.e("DEBUG - Repository", "Error loading TV schedule", e)
+            Pair(listOf(), mapOf())
+        }
+    }
+
     suspend fun openAndReadRawFile(
-        context: Context,
         localDate: LocalDate,
         zoneId: ZoneId,
         channelsMap: Map<String?, Channel?>,
     ): Pair<List<SimpleChannel>, Map<String, List<ProgramGuideSchedule<SimpleProgram>>>> {
         return try {
-            val inputStream: InputStream = context.resources.openRawResource(R.raw.data)
-            readDataFromFile(
-                stream = inputStream,
-                localDate, zoneId, channelsMap
-            )
-        } catch (_: IOException) {
-            Pair(listOf(), mapOf())
-        } catch (_: Resources.NotFoundException) {
+            Repository.getSchedule(channelsMap, localDate, zoneId)
+        } catch (e: Exception) {
             Pair(listOf(), mapOf())
         }
     }

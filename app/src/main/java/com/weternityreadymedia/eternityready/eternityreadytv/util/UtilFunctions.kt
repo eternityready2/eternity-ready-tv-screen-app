@@ -19,6 +19,7 @@ private fun createSchedule(
     description: String? = "",
     imageUrl: String? = "",
     url: String? = "",
+    day: String? = null,
 ): ProgramGuideSchedule<SimpleProgram> {
     val metadata = DateTimeFormatter.ofPattern("'Starts at' HH:mm").format(startTime)
     return ProgramGuideSchedule.createScheduleWithProgram(
@@ -32,7 +33,8 @@ private fun createSchedule(
             description = description,
             metadata = metadata,
             imageUrl = imageUrl,
-            url = url
+            url = url,
+            day = day
         )
     )
 }
@@ -47,6 +49,7 @@ fun processScheduleData(
     description: String? = "",
     imageUrl: String? = "",
     url: String? = "",
+    day: String? = null,
 ): ProgramGuideSchedule<SimpleProgram> {
     val maxShowEndTime = localDate.plusDays(1).atStartOfDay(zoneId)
 
@@ -62,6 +65,7 @@ fun processScheduleData(
         description = description,
         imageUrl = imageUrl,
         url = url,
+        day = day
     )
 }
 

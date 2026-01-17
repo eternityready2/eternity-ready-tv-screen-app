@@ -90,7 +90,7 @@ class PresenterViewModel: ViewModel() {
     ): Pair<List<SimpleChannel>, Map<String, List<ProgramGuideSchedule<SimpleProgram>>>> = run {
         if (readScheduleData == null || readScheduleData!!.first.isEmpty()) {
             val dataValue = Repository.openAndReadRawFile(
-                context, localDate, zoneId, channelListToMap(channelsLiveData.value?.channels)
+                localDate, zoneId, channelListToMap(channelsLiveData.value?.channels)
             )
             readScheduleData = dataValue
             dataValue

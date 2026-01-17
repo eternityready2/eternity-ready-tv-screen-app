@@ -23,5 +23,6 @@ data class SimpleProgram(
     val description: String?,
     val metadata: String?,
     val imageUrl: String?,
-    val url: String?
+    val url: String?,
+    val day: String?
 )
