@@ -37,7 +37,7 @@ class PresenterViewModel: ViewModel() {
     suspend fun getData() {
         val data = withContext(Dispatchers.IO) {
             try {
-                val remoteData = Repository.apiLoader.fetchData()
+                val remoteData = Repository.getChannels()
                 ChannelsList(remoteData)
             } catch (exception: HttpException) {
                 if (BuildConfig.DEBUG) Log.e("exception", exception.message.toString())

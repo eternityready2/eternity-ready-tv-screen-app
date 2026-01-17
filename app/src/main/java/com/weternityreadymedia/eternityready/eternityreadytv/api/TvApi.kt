@@ -1,6 +1,5 @@
 package com.weternityreadymedia.eternityready.eternityreadytv.api
-
-import com.weternityreadymedia.eternityready.eternityreadytv.data.Channel
+import com.weternityreadymedia.eternityready.eternityreadytv.data.ChannelResponse
 import retrofit2.http.GET
 
 interface TvApi {
@@ -9,8 +8,8 @@ interface TvApi {
         const val URL = "https://www.eternityready.com/"
     }
 
-    @GET("a/android-app-data.json")
-    suspend fun fetchData() : List<Channel>
+    @GET("data/channels.json")
+    suspend fun fetchData(): ChannelResponse
 
     @GET("a/on_demand.json")
     suspend fun fetchOnDemand() : OnDemandList

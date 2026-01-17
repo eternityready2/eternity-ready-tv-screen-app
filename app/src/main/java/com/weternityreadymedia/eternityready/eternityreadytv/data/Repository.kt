@@ -3,6 +3,7 @@ package com.weternityreadymedia.eternityready.eternityreadytv.data
 import android.content.Context
 import android.content.res.Resources
 import com.egeniq.androidtvprogramguide.entity.ProgramGuideSchedule
+import com.google.gson.GsonBuilder
 import com.weternityreadymedia.eternityready.eternityreadytv.R
 import com.weternityreadymedia.eternityready.eternityreadytv.api.TvApi
 import com.weternityreadymedia.eternityready.eternityreadytv.streamer.readDataFromFile
@@ -15,12 +16,32 @@ import java.io.InputStream
 
 object Repository {
 
+    private val gson = GsonBuilder().create()
+
     val apiLoader: TvApi = Retrofit
         .Builder()
         .baseUrl(TvApi.URL)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
         .create(TvApi::class.java)
+
+    suspend fun getChannels(): List<Channel> {
+        return try {
+            val response = apiLoader.fetchData()
+            response.channels.mapIndexed { index, item ->
+                Channel(
+                    number = (index + 1).toString(),
+                    name = item.name,
+                    logo = item.logo,
+                    url = item.embed,
+                    notes = item.description,
+                    category = item.categories?.joinToString(", ")
+                )
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 
     suspend fun openAndReadRawFile(
         context: Context,
@@ -39,6 +60,5 @@ object Repository {
         } catch (_: Resources.NotFoundException) {
             Pair(listOf(), mapOf())
         }
-
     }
 }
