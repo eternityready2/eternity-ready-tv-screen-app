@@ -20,13 +20,26 @@ import java.nio.charset.StandardCharsets
 object Repository {
 
     private val gson = GsonBuilder().create()
-    private val onDemandCache = HashMap<String, List<OnDemand>>()
+    
+    private data class CacheEntry(
+        val data: List<OnDemand>,
+        val timestamp: Long
+    )
+    
+    private val onDemandCache = mutableMapOf<String, CacheEntry>()
+    private val CACHE_DURATION = 60 * 60 * 1000L
+    
     val apiLoader: TvApi = Retrofit
         .Builder()
         .baseUrl(TvApi.URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
         .create(TvApi::class.java)
+
+    private fun isCacheValid(entry: CacheEntry?): Boolean {
+        return entry != null && 
+               (System.currentTimeMillis() - entry.timestamp) <= CACHE_DURATION
+    }
 
     suspend fun getChannels(): List<Channel> {
         return try {
@@ -47,10 +60,13 @@ object Repository {
     }
 
     suspend fun getOnDemand(contentSelected: String): List<OnDemand> {
-        if (onDemandCache.isNotEmpty()) {
-            return onDemandCache[contentSelected] ?: onDemandCache["all"].orEmpty()
+        // Check cache first - handles both empty and expired cache
+        val cachedEntry = onDemandCache[contentSelected]
+        if (isCacheValid(cachedEntry)) {
+            return cachedEntry!!.data
         }
 
+        // Cache miss or expired - fetch fresh data
         val movieResponse = apiLoader.fetchMovies()
         val radioResponse = apiLoader.fetchRadio()
         val musicResponse = apiLoader.fetchMusic()
@@ -118,15 +134,19 @@ object Repository {
                 category = "Featured"
             )
         }
+        
         val radioAndStation = stationsFeatured + radioContent
         val allContent = stationsFeatured + (radioContent + moviesContent + musicContent).sortedBy { it.category?.lowercase() }
 
-        onDemandCache["radio"] = radioAndStation
-        onDemandCache["movies"] = moviesContent
-        onDemandCache["music"] = musicContent
-        onDemandCache["all"] = allContent
+        // Cache fresh data with timestamp
+        val currentTime = System.currentTimeMillis()
+        onDemandCache["radio"] = CacheEntry(radioAndStation, currentTime)
+        onDemandCache["movies"] = CacheEntry(moviesContent, currentTime)
+        onDemandCache["music"] = CacheEntry(musicContent, currentTime)
+        onDemandCache["all"] = CacheEntry(allContent, currentTime)
 
-        return onDemandCache[contentSelected] ?: allContent
+        // Return requested content or fallback to all
+        return onDemandCache[contentSelected]?.data ?: allContent
     }
 
     suspend fun getSchedule(
@@ -153,5 +173,14 @@ object Repository {
         } catch (e: Exception) {
             Pair(listOf(), mapOf())
         }
+    }
+
+    // Manual cache clearing methods
+    fun clearOnDemandCache() {
+        onDemandCache.clear()
+    }
+
+    fun clearOnDemandCacheEntry(key: String) {
+        onDemandCache.remove(key)
     }
 }
