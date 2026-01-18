@@ -44,10 +44,11 @@ object Repository {
         }
     }
 
-    suspend fun getOnDemand(): List<OnDemand> {
+    suspend fun getOnDemand(contentSelected: String): List<OnDemand> {
         return try {
+            // val musicResponse = apiLoader.fetchMusic()
             val movieResponse = apiLoader.fetchMovies()
-            val musicResponse = apiLoader.fetchMusic()
+            val radioResponse = apiLoader.fetchRadio()
 
             val movies = movieResponse.movies.flatMap { movie ->
                 val categories = movie.categories ?: listOf("Uncategorized")
@@ -62,6 +63,35 @@ object Repository {
                 }
             }
 
+            val radio = radioResponse.channels.flatMap { radioItem ->
+                val categories = radioItem.categories ?: listOf("Uncategorized")
+                categories.map { category ->
+                    OnDemand(
+                        title = radioItem.name,
+                        logo = when {
+                            radioItem.logo == null -> null
+                            radioItem.logo.trim().startsWith("http://") -> 
+                                radioItem.logo.trim().replace("http://".toRegex(), "https://")
+                            radioItem.logo.trim().startsWith("/") || !radioItem.logo.trim().contains("://") -> 
+                                "https://eternityready.com/radio/${radioItem.logo.trim()}"
+                            else -> radioItem.logo.trim()
+                        },
+                        url = radioItem.src,
+                        description = radioItem.description,
+                        category = category
+                    )
+                }
+            }
+
+            when (contentSelected.lowercase()) {
+                "radio" -> radio
+                "movies" -> movies
+                "all" -> radio + movies
+                else -> radio + movies
+            }
+
+
+            /*
             val music = musicResponse.music.flatMap { musicItem ->
                 val categories = musicItem.categories ?: listOf("Music")
                 categories.map { category ->
@@ -74,8 +104,7 @@ object Repository {
                     )
                 }
             }
-
-            movies + music
+            */
         } catch (e: Exception) {
             emptyList()
         }

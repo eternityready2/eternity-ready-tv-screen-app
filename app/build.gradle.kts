@@ -21,8 +21,8 @@ android {
         applicationId = "com.weternityreadymedia.eternityready.eternityreadytv"
         minSdk = 21
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.2.3"
+        versionCode = 5
+        versionName = "1.2.4"
 
     }
 
@@ -74,6 +74,8 @@ dependencies {
     implementation(libs.retroGson)
     implementation(libs.coroutine)
     implementation(libs.lifecycleScope)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation(files("../libs/tv-programming.aar"))
     implementation(libs.threetenabp)
     implementation(libs.opencsv)

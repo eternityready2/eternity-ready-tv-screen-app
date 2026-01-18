@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_button"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:textAllCaps="true"
+    android:letterSpacing="0.5"
+    android:gravity="center"
+    android:background="@drawable/tab_button_background"
+    android:elevation="2dp" />

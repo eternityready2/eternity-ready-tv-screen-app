@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.egeniq.androidtvprogramguide.entity.ProgramGuideSchedule
 import com.weternityreadymedia.eternityready.eternityreadytv.BuildConfig
 import com.weternityreadymedia.eternityready.eternityreadytv.api.ChannelsList
@@ -14,13 +15,14 @@ import com.weternityreadymedia.eternityready.eternityreadytv.data.SimpleChannel
 import com.weternityreadymedia.eternityready.eternityreadytv.data.SimpleProgram
 import com.weternityreadymedia.eternityready.eternityreadytv.util.channelListToMap
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import retrofit2.HttpException
 import java.io.IOException
 
-class PresenterViewModel: ViewModel() {
+class PresenterViewModel : ViewModel() {
 
     private val _channelsLiveData: MutableLiveData<ChannelsList> = MutableLiveData()
     private val _onDemandLiveData: MutableLiveData<OnDemandList> = MutableLiveData()
@@ -29,24 +31,56 @@ class PresenterViewModel: ViewModel() {
     val onDemandLiveData: LiveData<OnDemandList> = _onDemandLiveData
 
     private var loadingState: LoadingState = LoadingState.IDLE
-
     private var readScheduleData: Pair<List<SimpleChannel>, Map<String, List<ProgramGuideSchedule<SimpleProgram>>>>? = null
-
     private var onLoadComplete: ((state: LoadingState) -> Unit)? = null
 
-    suspend fun getData() {
+    fun refreshOnDemandForCategory(category: String) {
+        _onDemandLiveData.value = OnDemandList(listOf())
+        viewModelScope.launch {
+            getOnDemand(category)
+        }
+    }
+
+    fun getData() {
+        viewModelScope.launch {
+            val data = withContext(Dispatchers.IO) {
+                try {
+                    val remoteData = Repository.getChannels()
+                    ChannelsList(remoteData)
+                } catch (exception: HttpException) {
+                    if (BuildConfig.DEBUG) Log.e("PresenterViewModel", exception.message.toString())
+                    loadingState = LoadingState.ERROR
+                    ChannelsList(listOf())
+                } catch (exception: IOException) {
+                    if (BuildConfig.DEBUG) Log.e("PresenterViewModel", exception.message.toString())
+                    loadingState = LoadingState.ERROR
+                    ChannelsList(listOf())
+                }
+            }
+
+            if (data.channels.isNotEmpty()) {
+                loadingState = LoadingState.LOADED
+            }
+
+            _channelsLiveData.value = data
+
+            getOnDemand("all")
+        }
+    }
+
+    private suspend fun getOnDemand(category: String) {
         val data = withContext(Dispatchers.IO) {
             try {
-                val remoteData = Repository.getChannels()
-                ChannelsList(remoteData)
+                val remoteData = Repository.getOnDemand(category)
+                OnDemandList(remoteData)
             } catch (exception: HttpException) {
-                if (BuildConfig.DEBUG) Log.e("exception", exception.message.toString())
+                if (BuildConfig.DEBUG) Log.e("PresenterViewModel", exception.message.toString())
                 loadingState = LoadingState.ERROR
-                ChannelsList(listOf())
+                OnDemandList(listOf())
             } catch (exception: IOException) {
-                if (BuildConfig.DEBUG) Log.e("exception", exception.message.toString())
+                if (BuildConfig.DEBUG) Log.e("PresenterViewModel", exception.message.toString())
                 loadingState = LoadingState.ERROR
-                ChannelsList(listOf())
+                OnDemandList(listOf())
             }
         }
 
@@ -54,32 +88,7 @@ class PresenterViewModel: ViewModel() {
             loadingState = LoadingState.LOADED
         }
 
-        _channelsLiveData.value = data
-        getOnDemand()
-    }
-
-    private suspend fun getOnDemand() {
-        val data = withContext(Dispatchers.IO) {
-            try {
-                val remoteData = Repository.getOnDemand()
-                OnDemandList(remoteData)
-            } catch (exception: HttpException) {
-                if (BuildConfig.DEBUG) Log.e("exception", exception.message.toString())
-                loadingState = LoadingState.ERROR
-                OnDemandList(listOf())
-            } catch (exception: IOException) {
-                if (BuildConfig.DEBUG) Log.e("exception", exception.message.toString())
-                loadingState = LoadingState.ERROR
-                OnDemandList(listOf())
-            }
-        }
-
-        if ((data as OnDemandList).channels.isNotEmpty() && loadingState == LoadingState.LOADED) {
-            loadingState = LoadingState.LOADED
-        }
-
-        _onDemandLiveData.value = data
-
+        _onDemandLiveData.postValue(data)
         onLoadComplete?.invoke(loadingState)
     }
 

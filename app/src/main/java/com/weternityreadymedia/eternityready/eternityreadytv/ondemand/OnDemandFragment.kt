@@ -2,11 +2,13 @@ package com.weternityreadymedia.eternityready.eternityreadytv.ondemand
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +31,7 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
 
     private val recyclerViewCategoriesAdapter = OnDemandRecyclerViewAdapter()
     private val recyclerViewCategoryItemsAdapter = OnDemandContentRecyclerViewAdapter(this)
+    private var selectedTabIndex = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,7 +46,6 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
 
         if (viewModel.onDemandLiveData.value != null) {
             recyclerViewCategoriesAdapter.updateList(viewModel.onDemandLiveData.value!!.categories)
-
             recyclerViewCategoryItemsAdapter.updateItems(viewModel.onDemandLiveData.value!!.displayChannels.toList())
         }
     }
@@ -53,17 +55,99 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_on_demand, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupTabs(view)
+        setupCategories(view)
+        setupItems(view)
+
+        viewModel.onDemandLiveData.observe(viewLifecycleOwner) { onDemandData ->
+            recyclerViewCategoriesAdapter.updateList(onDemandData.categories)
+            recyclerViewCategoryItemsAdapter.updateItems(onDemandData.displayChannels.toList())
+        }
+    }
+
+    private fun setupTabs(view: View) {
+        val tabsContainer = view.findViewById<LinearLayout>(R.id.tabs_container)
+        val tabTitles = listOf("All Content", "Movies", "Radio")
+        
+        tabsContainer.removeAllViews()
+        
+        tabTitles.forEachIndexed { index, title ->
+            val tabButton = LayoutInflater.from(requireContext())
+                .inflate(R.layout.item_tab_button, tabsContainer, false) as TextView
+            
+            tabButton.text = title
+            tabButton.tag = index
+            
+            val backgroundResId = when {
+                index == 0 -> R.drawable.tab_button_background
+                index == tabTitles.size - 1 -> R.drawable.tab_button_right_background
+                else -> R.drawable.tab_button_middle_background
+            }
+            tabButton.setBackgroundResource(backgroundResId)
+            
+            tabButton.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) updateTabSelection(tabsContainer, index)
+            }
+            
+            tabButton.setOnClickListener {
+                updateTabSelection(tabsContainer, index)
+                tabButton.requestFocus()
+            }
+            
+            tabsContainer.addView(tabButton)
+        }
+        
+        tabsContainer.runWhenReady {
+            updateTabSelection(tabsContainer, 0)
+            tabsContainer.getChildAt(0)?.requestFocus()
+        }
+    }
+
+    private fun updateTabSelection(container: LinearLayout, selectedIndex: Int) {
+        selectedTabIndex = selectedIndex
+
+        val category = when (selectedIndex) {
+            0 -> "all"
+            1 -> "movies"
+            2 -> "radio"
+            else -> "all"
+        }
+        viewModel.refreshOnDemandForCategory(category)
+
+        val childCount = container.childCount
+        
+        for (i in 0 until childCount) {
+            val tabButton = container.getChildAt(i) as TextView
+            val isSelected = i == selectedIndex
+            
+            val backgroundResId = when {
+                i == 0 && isSelected -> R.drawable.tab_button_active_left
+                i == childCount - 1 && isSelected -> R.drawable.tab_button_active_right
+                i == 0 -> R.drawable.tab_button_background
+                i == childCount - 1 -> R.drawable.tab_button_right_background
+                isSelected -> R.drawable.tab_button_active_middle
+                else -> R.drawable.tab_button_middle_background
+            }
+            
+            tabButton.setBackgroundResource(backgroundResId)
+            tabButton.setTextColor(if (isSelected) Color.WHITE else Color.parseColor("#9ca3af"))
+            tabButton.elevation = if (isSelected) 8f else 0f
+            tabButton.translationY = if (isSelected) -2f else 0f
+        }
+    }
+
+    private fun setupCategories(view: View) {
         recyclerViewCategoriesAdapter.setOnCategoryFocused { _: String, position: Int ->
             val moreDetailsLayout = view.findViewById<ViewGroup>(R.id.on_demand_more_details_layout)
             if (moreDetailsLayout.visibility == ViewGroup.VISIBLE) moreDetailsLayout.visibility = ViewGroup.INVISIBLE
-            (view.findViewById<RecyclerView>(R.id.recycler_category_items).layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+            (view.findViewById<RecyclerView>(R.id.recycler_category_items).layoutManager as LinearLayoutManager)
+                .scrollToPositionWithOffset(position, 0)
         }
 
         val recyclerViewCategories = view.findViewById<RecyclerView>(R.id.on_demand_categories)
@@ -72,7 +156,9 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
             val item = (recyclerViewCategories.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             recyclerViewCategories.findViewHolderForAdapterPosition(item)?.itemView?.requestFocus()
         }
+    }
 
+    private fun setupItems(view: View) {
         val recyclerViewItems = view.findViewById<RecyclerView>(R.id.recycler_category_items)
         recyclerViewItems.adapter = recyclerViewCategoryItemsAdapter
 
@@ -100,7 +186,7 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
         startActivity(intent)
     }
 
-    private fun RecyclerView.runWhenReady(action: () -> Unit) {
+    private fun View.runWhenReady(action: () -> Unit) {
         val globalLayoutListener = object: ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 action()
@@ -112,7 +198,6 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
 
     companion object {
         val TAG: String = OnDemandFragment::class.java.name
-
         fun instance() = OnDemandFragment()
     }
 }
