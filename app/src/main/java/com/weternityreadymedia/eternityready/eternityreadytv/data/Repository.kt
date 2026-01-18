@@ -61,7 +61,7 @@ object Repository {
                         category = category
                     )
                 }
-            }
+            }.sortedBy { it.category?.lowercase() }
 
             val radio = radioResponse.channels.flatMap { radioItem ->
                 val categories = radioItem.categories ?: listOf("Uncategorized")
@@ -81,7 +81,7 @@ object Repository {
                         category = category
                     )
                 }
-            }
+            }.sortedBy { it.category?.lowercase() }
 
             when (contentSelected.lowercase()) {
                 "radio" -> radio
