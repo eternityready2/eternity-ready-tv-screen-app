@@ -53,7 +53,21 @@ object Repository {
 
         val movieResponse = apiLoader.fetchMovies()
         val radioResponse = apiLoader.fetchRadio()
+        val musicResponse = apiLoader.fetchMusic()
         val stations = apiLoader.fetchStations()
+
+        val musicContent = musicResponse.music.flatMap { musicItem ->
+            val categories = musicItem.categories ?: listOf("Music")
+            categories.map { category ->
+                OnDemand(
+                    title = musicItem.title,
+                    logo = musicItem.thumbnail?.replace("http://", "https://"),
+                    url = musicItem.embed,
+                    description = musicItem.description,
+                    category = category
+                )
+            }
+        }.sortedBy { it.category?.lowercase() }
 
         val moviesContent = movieResponse.movies.flatMap { movie ->
             val categories = movie.categories ?: listOf("Uncategorized")
@@ -105,10 +119,11 @@ object Repository {
             )
         }
         val radioAndStation = stationsFeatured + radioContent
-        val allContent = stationsFeatured + (radioContent + moviesContent).sortedBy { it.category?.lowercase() }
+        val allContent = stationsFeatured + (radioContent + moviesContent + musicContent).sortedBy { it.category?.lowercase() }
 
         onDemandCache["radio"] = radioAndStation
         onDemandCache["movies"] = moviesContent
+        onDemandCache["music"] = musicContent
         onDemandCache["all"] = allContent
 
         return onDemandCache[contentSelected] ?: allContent

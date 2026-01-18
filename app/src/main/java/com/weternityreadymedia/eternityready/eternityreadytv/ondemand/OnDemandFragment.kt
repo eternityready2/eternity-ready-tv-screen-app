@@ -73,7 +73,7 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
 
     private fun setupTabs(view: View) {
         val tabsContainer = view.findViewById<LinearLayout>(R.id.tabs_container)
-        val tabTitles = listOf("All Content", "Movies", "Radio")
+        val tabTitles = listOf("All Content", "Movies", "Music", "Radio")
         
         tabsContainer.removeAllViews()
         
@@ -115,7 +115,8 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
         val category = when (selectedIndex) {
             0 -> "all"
             1 -> "movies"
-            2 -> "radio"
+            2 -> "music"
+            3 -> "radio"
             else -> "all"
         }
         viewModel.refreshOnDemandForCategory(category)
