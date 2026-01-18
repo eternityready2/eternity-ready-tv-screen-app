@@ -111,7 +111,7 @@ object Repository {
                             "https://eternityready.com/radio/${radioItem.logo.trim()}"
                         else -> radioItem.logo.trim()
                     },
-                    url = radioItem.src,
+                    url = "https://eternityready.com/radio/stream-player.html?stream=https://proxy.eternityready.com/?url=${URLEncoder.encode(radioItem.src, StandardCharsets.UTF_8.toString())}&station=${URLEncoder.encode(radioItem.name, StandardCharsets.UTF_8.toString())}",
                     description = radioItem.description,
                     category = category
                 )
@@ -129,7 +129,7 @@ object Repository {
                         "https://listen.eternityready.com/${station.logo.trim()}"
                     else -> station.logo.trim()
                 },
-                url = "https://proxy.eternityready.com/?url=${URLEncoder.encode(station.url, StandardCharsets.UTF_8.toString())}",
+                url = "https://eternityready.com/radio/stream-player.html?stream=https://proxy.eternityready.com/?url=${URLEncoder.encode(station.url, StandardCharsets.UTF_8.toString())}&station=${URLEncoder.encode(station.name, StandardCharsets.UTF_8.toString())}",
                 description = station.description,
                 category = "Featured"
             )
