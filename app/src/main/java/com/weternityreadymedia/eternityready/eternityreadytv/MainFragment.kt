@@ -40,12 +40,27 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         childFragmentManager
             .beginTransaction()
-            .replace(R.id.fragment_container, TvSchedulingFragment(), TvSchedulingFragment.TAG)
+            .replace(R.id.fragment_container, TvSchedulingFragment(), TvSchedulingFragment.TAG)            
             .commitNow()
         initializeButtons(view)
     }
 
     private fun initializeButtons(view: View) {
+        val categoriesButton = view.findViewById<Button>(R.id.categories_live)
+        categoriesButton.apply {
+            setCompoundDrawablesWithIntrinsicBounds(R.drawable.live_tv_24, 0, 0, 0)
+            text = getString(R.string.live_tv)
+            
+            setOnClickListener {
+                // Toggle logic here if needed
+                childFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, TvSchedulingFragment(), TvSchedulingFragment.TAG)
+                    .commit()
+                // Update button state if needed
+            }
+            requestFocus()
+        }
         view.findViewById<Button>(R.id.search).setOnClickListener {
             val intent = Intent(requireActivity(), SearchActivity::class.java).apply {
                 putExtra(SearchActivity.SEARCHABLE_LIST, viewModel.channelsLiveData.value?.channels?.toTypedArray())
@@ -62,6 +77,7 @@ class MainFragment : Fragment() {
 
         view.findViewById<Button>(R.id.categories_live).apply {
             setOnClickListener {
+                /*
                 text = if (text.contentEquals("Categories", ignoreCase = true)) {
                     childFragmentManager
                         .beginTransaction()
@@ -77,6 +93,16 @@ class MainFragment : Fragment() {
                     setCompoundDrawablesWithIntrinsicBounds(R.drawable.space_dashboard, 0, 0, 0)
                     getText(R.string.categories)
                 }
+                */
+                childFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, TvSchedulingFragment(), TvSchedulingFragment.TAG)
+                    .commit()
+                setCompoundDrawablesWithIntrinsicBounds(R.drawable.live_tv_24, 0, 0, 0)
+                getText(R.string.live_tv)
+                //setCompoundDrawablesWithIntrinsicBounds(R.drawable.space_dashboard, 0, 0, 0)
+                //getText(R.string.categories)
+
             }
             requestFocus()
         }
