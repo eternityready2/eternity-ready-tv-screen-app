@@ -73,7 +73,7 @@ class OnDemandFragment : Fragment(), OnItemFocusedListener {
 
     private fun setupTabs(view: View) {
         val tabsContainer = view.findViewById<LinearLayout>(R.id.tabs_container)
-        val tabTitles = listOf("All Content", "Movies", "Music", "Radio")
+        val tabTitles = listOf("All", "Movies", "Music", "Radio")
         
         tabsContainer.removeAllViews()
         
