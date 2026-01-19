@@ -14,6 +14,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import android.util.Log
 
+
+
 suspend fun readDataFromJson(
     schedules: List<ScheduleChannel>,
     channelsMap: Map<String?, Channel?>,
@@ -25,27 +27,38 @@ withContext(Dispatchers.IO) {
     val channelMap = mutableMapOf<String, MutableList<ProgramGuideSchedule<SimpleProgram>>>()
     val todayDayOfWeek = localDate.dayOfWeek.toString()
 
-    schedules.forEachIndexed { index, scheduleChannel ->
-        val channelNumber = (index + 1).toString()
-        val channelMatch = channelsMap[channelNumber]
-
-        channelSet.add(
-            SimpleChannel(
-                id = channelNumber,
-                name = SpannedString(scheduleChannel.channel_name ?: "Channel $channelNumber"),
-                imageUrl = channelMatch?.logo?.replace("http://", "https://"),
-                channelNumber = channelNumber
+    // Add ALL channels from channelsMap first (even those without schedules)
+    channelsMap.forEach { (channelNumber, channelMatch) ->
+        if (!channelNumber.isNullOrEmpty()) {
+            channelSet.add(
+                SimpleChannel(
+                    id = channelNumber,
+                    name = SpannedString(channelMatch?.name ?: "Channel $channelNumber"),
+                    imageUrl = channelMatch?.logo?.replace("http://", "https://"),
+                    channelNumber = channelNumber
+                )
             )
-        )
+        }
+    }
 
-        scheduleChannel.shows.forEach { show ->
+    // Match schedules to channels using channel numbers from channelsMap
+    channelsMap.forEach { (channelNumber, channelMatch) ->
+        if (channelNumber.isNullOrEmpty()) return@forEach
+        
+        // Find matching schedule by channel name or number
+        val matchingSchedule = schedules.find { schedule ->
+            schedule.channel_name?.equals(channelMatch?.name, ignoreCase = true) == true ||
+            schedule.channel_name?.equals(channelNumber, ignoreCase = true) == true
+        }
+        
+        matchingSchedule?.shows?.forEach { show ->
             if (show.day?.lowercase() == todayDayOfWeek.lowercase() &&
                 show.start_time != null &&
                 show.end_time != null
             ) {
                 Log.d(
                     "ScheduleDebug",
-                    "Today=$todayDayOfWeek channel=$channelNumber name=${scheduleChannel.channel_name} show=${show.show_name} start=${show.start_time} end=${show.end_time}"
+                    "Today=$todayDayOfWeek channel=$channelNumber name=${channelMatch?.name} show=${show.show_name} start=${show.start_time} end=${show.end_time}"
                 )
 
                 val startTimeOnly = show.start_time.substringBeforeLast(":").padEnd(5, '0')
