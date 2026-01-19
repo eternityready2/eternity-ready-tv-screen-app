@@ -48,7 +48,6 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
     override fun isTopMenuVisible(): Boolean = false
 
     override fun requestRefresh() {
-        // You can refresh other data here as well.
         setState(State.Loading)
         requestingProgramGuideFor(currentDate)
     }
@@ -62,6 +61,27 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
                 setData(value.first, value.second, localDate)
                 setState(State.Content)
             }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        // Set bottom_detail height to 130dp after layout inflates
+        view.post {
+            setBottomDetailHeight(view)
+        }
+    }
+
+    private fun setBottomDetailHeight(view: View) {
+        val bottomDetail = view.findViewById<View>(R.id.bottom_detail)
+        bottomDetail?.let { detail ->
+            val heightPx = (130 * resources.displayMetrics.density).toInt()
+            val params = detail.layoutParams
+            params.height = heightPx
+            detail.layoutParams = params
+            detail.requestLayout()
+            Log.d(TAG, "Set bottom_detail height to 130dp")
         }
     }
 
@@ -79,6 +99,9 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
 
         val imageView = view?.findViewById<ImageView>(R.id.programguide_detail_image) ?: return
 
+        // Ensure bottom_detail height stays 130dp on every selection
+        view?.let { setBottomDetailHeight(it) }
+
         if (innerSchedule != null) {
             Glide.with(imageView)
                 .load(innerSchedule.imageUrl)
@@ -95,7 +118,6 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
     override fun onScheduleClicked(programGuideSchedule: ProgramGuideSchedule<SimpleProgram>) {
         val innerSchedule = programGuideSchedule.program
         if (innerSchedule == null && BuildConfig.DEBUG) {
-            // If this happens, then our data source gives partial info
             Log.e(TAG, "Unable to open schedule!")
             return
         }
@@ -104,15 +126,6 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
             putExtra(WebViewDisplayFragment.URL_KEY, innerSchedule?.url)
         }
         startActivity(intent)
-
-        /*if (programGuideSchedule.isCurrentProgram) {
-
-        } else {
-            Toast.makeText(context, "Open detail page", Toast.LENGTH_LONG).show()
-        }*/
-
-        // Example of how a program can be updated. You could also change the underlying program.
-        // updateProgram(programGuideSchedule.copy(displayTitle = programGuideSchedule.displayTitle + " [clicked]"))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,7 +145,6 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
     ): View {
         val themeWrapper = ContextThemeWrapper(activity, eternityR.style.ScheduleTheme)
         val localInflater = inflater.cloneInContext(themeWrapper)
-
         return super.onCreateView(localInflater, container, savedInstanceState)
     }
 }
