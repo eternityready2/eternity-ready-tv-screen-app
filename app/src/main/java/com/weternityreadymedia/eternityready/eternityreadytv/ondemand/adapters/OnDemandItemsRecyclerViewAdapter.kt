@@ -41,7 +41,7 @@ class OnDemandItemsRecyclerViewAdapter() : RecyclerView.Adapter<ViewHolder>() {
         Glide.with(holder.view.context)
             .load(item.logo)
             .placeholder(R.drawable.loading)
-            .centerCrop()
+            .centerInside()
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .error(R.drawable.movie)
             .into(holder.imageView)
