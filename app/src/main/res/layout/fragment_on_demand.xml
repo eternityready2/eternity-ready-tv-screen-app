@@ -65,42 +65,42 @@
         android:visibility="invisible"
         android:layout_gravity="bottom"
         android:clipChildren="false"
-        android:clipToPadding="false"
+        android:clipToPadding="true"
         tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
                 android:id="@+id/detail_title"
                 style="@style/ProgramGuide.Text.Detail.Title"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/detail_metadata"
-                tools:text="NPO Politiek" />
+                android:minHeight="0dp"
+                tools:text="NPO Politiek This is a very long title that overflows" />
 
             <TextView
                 android:id="@+id/detail_metadata"
                 style="@style/ProgramGuide.Text.Detail.Metadata"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start"
-                app:layout_constraintStart_toStartOf="@id/detail_title"
-                app:layout_constraintTop_toBottomOf="@id/detail_title"
-                app:layout_constraintBottom_toTopOf="@id/detail_description"
+                android:layout_marginTop="4dp"
                 tools:text="EenVandaag • Wo 30 jan 20:00 • AVROTROS" />
 
             <TextView
                 android:id="@+id/detail_description"
                 style="@style/ProgramGuide.Text.Detail.Description"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/detail_title"
-                app:layout_constraintTop_toBottomOf="@id/detail_metadata"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:text="This is the description of the item.\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6" />
+                android:layout_marginTop="4dp"
+                tools:text="This is the description of the item.\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8" />
+
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
