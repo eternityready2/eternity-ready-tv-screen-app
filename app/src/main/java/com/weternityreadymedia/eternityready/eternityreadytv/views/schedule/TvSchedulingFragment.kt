@@ -18,8 +18,10 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.egeniq.androidtvprogramguide.ProgramGuideFragment
 import com.egeniq.androidtvprogramguide.R
 import com.egeniq.androidtvprogramguide.entity.ProgramGuideSchedule
+import com.egeniq.androidtvprogramguide.entity.ProgramGuideChannel
 import com.weternityreadymedia.eternityready.eternityreadytv.BuildConfig
 import com.weternityreadymedia.eternityready.eternityreadytv.data.SimpleProgram
+import com.weternityreadymedia.eternityready.eternityreadytv.data.SimpleChannel
 import com.weternityreadymedia.eternityready.eternityreadytv.viewmodel.PresenterViewModel
 import com.weternityreadymedia.eternityready.eternityreadytv.views.webview.WebViewDisplayFragment
 import com.weternityreadymedia.eternityready.eternityreadytv.views.webview.WebviewActivity
@@ -36,8 +38,8 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
 
     private lateinit var viewModel: PresenterViewModel
 
-    override val USE_MILITARY_TIME: Boolean
-        get() = false
+    override val CAN_FOCUS_CHANNEL: Boolean
+        get() = true
 
     override val DISPLAY_TIMEZONE: ZoneId
         get() = ZoneId.systemDefault()
@@ -66,7 +68,7 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+        view.findViewById<View>(R.id.programguide_day_filter)?.visibility = View.GONE
         // Set bottom_detail height to 130dp after layout inflates
         view.post {
             setBottomDetailHeight(view)
@@ -128,9 +130,37 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
         startActivity(intent)
     }
 
+
+    override fun onChannelSelected(channel: ProgramGuideChannel) {
+        if (channel is SimpleChannel) {
+            val titleView = view?.findViewById<TextView>(R.id.programguide_detail_title)
+            titleView?.text = channel.name
+
+            val descriptionView = view?.findViewById<TextView>(R.id.programguide_detail_description)
+            descriptionView?.text = channel.description
+
+            val imageView = view?.findViewById<ImageView>(R.id.programguide_detail_image) ?: return
+            Glide.with(imageView)
+                .load(channel.imageUrl)
+                .centerCrop()
+                .error(R.drawable.programguide_icon_placeholder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(imageView)
+        }
+    }
+
+    override fun onChannelClicked(channel: ProgramGuideChannel) {
+        if (channel is SimpleChannel) {
+            val intent = Intent(requireActivity(), WebviewActivity::class.java).apply {
+                putExtra(WebViewDisplayFragment.URL_KEY, channel.url)
+            }
+            startActivity(intent)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        showProgramGuideDayFilter = false
     }
 
     override fun onAttach(context: Context) {

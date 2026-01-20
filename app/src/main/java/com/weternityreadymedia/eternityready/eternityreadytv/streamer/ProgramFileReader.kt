@@ -35,7 +35,9 @@ withContext(Dispatchers.IO) {
                     id = channelNumber,
                     name = SpannedString(channelMatch?.name ?: "Channel $channelNumber"),
                     imageUrl = channelMatch?.logo?.replace("http://", "https://"),
-                    channelNumber = channelNumber
+                    channelNumber = channelNumber,
+                    description = channelMatch?.notes,
+                    url = channelMatch?.url
                 )
             )
         }

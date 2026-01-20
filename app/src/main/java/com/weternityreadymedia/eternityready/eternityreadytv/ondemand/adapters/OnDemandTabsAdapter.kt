@@ -41,13 +41,13 @@ class OnDemandTabsAdapter : RecyclerView.Adapter<OnDemandTabsAdapter.ViewHolder>
         // Handle focus change for selection
         holder.itemView.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                selectedPosition = position
+                selectedPosition = holder.adapterPosition
                 notifyDataSetChanged()
             }
         }
 
         holder.itemView.setOnClickListener {
-            selectedPosition = position
+            selectedPosition = holder.adapterPosition
             notifyDataSetChanged()
         }
     }

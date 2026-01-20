@@ -7,7 +7,9 @@ data class SimpleChannel(
     override val id: String,
     override val name: Spanned?,
     override val imageUrl: String?,
-    override val channelNumber: String?
+    override val channelNumber: String?,
+    val description: String?,
+    val url: String?
 ) : ProgramGuideChannel {
     override fun equals(other: Any?): Boolean {
         return other is SimpleChannel && this.id == other.id
