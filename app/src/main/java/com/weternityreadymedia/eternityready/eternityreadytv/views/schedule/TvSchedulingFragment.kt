@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import java.util.Locale
+import androidx.constraintlayout.widget.ConstraintLayout
+import android.graphics.Color
 
 class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
     companion object {
@@ -69,6 +71,8 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<View>(R.id.programguide_day_filter)?.visibility = View.GONE
+        val constraintRoot = view.findViewById<ConstraintLayout>(R.id.programguide_constraint_root)
+        constraintRoot.setBackgroundColor(Color.BLACK)
         // Set bottom_detail height to 130dp after layout inflates
         view.post {
             setBottomDetailHeight(view)

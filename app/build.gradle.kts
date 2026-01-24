@@ -21,8 +21,8 @@ android {
         applicationId = "com.weternityreadymedia.eternityready.eternityreadytv"
         minSdk = 21
         targetSdk = 36
-        versionCode = 8
-        versionName = "1.3.1"
+        versionCode = 9
+        versionName = "1.3.2"
 
     }
 
