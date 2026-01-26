@@ -84,7 +84,7 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(imageView)
 
-        // Set bottom_detail height to 130dp after layout inflates
+        // Set bottom_detail height to 115dp after layout inflates
         view.post {
             setBottomDetailHeight(view)
         }
@@ -93,12 +93,12 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
     private fun setBottomDetailHeight(view: View) {
         val bottomDetail = view.findViewById<View>(R.id.bottom_detail)
         bottomDetail?.let { detail ->
-            val heightPx = (130 * resources.displayMetrics.density).toInt()
+            val heightPx = (115 * resources.displayMetrics.density).toInt()
             val params = detail.layoutParams
             params.height = heightPx
             detail.layoutParams = params
             detail.requestLayout()
-            Log.d(TAG, "Set bottom_detail height to 130dp")
+            Log.d(TAG, "Set bottom_detail height to 115dp")
         }
     }
 
@@ -116,7 +116,7 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
 
         val imageView = view?.findViewById<ImageView>(R.id.programguide_detail_image) ?: return
 
-        // Ensure bottom_detail height stays 130dp on every selection
+        // Ensure bottom_detail height stays 115dp on every selection
         view?.let { setBottomDetailHeight(it) }
 
         imageView.scaleType = ImageView.ScaleType.FIT_XY
@@ -163,7 +163,6 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
             val imageView = view?.findViewById<ImageView>(R.id.programguide_detail_image) ?: return
             Glide.with(imageView)
                 .load(channel.imageUrl)
-                .centerCrop()
                 .error(R.drawable.programguide_icon_placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .transition(DrawableTransitionOptions.withCrossFade())
