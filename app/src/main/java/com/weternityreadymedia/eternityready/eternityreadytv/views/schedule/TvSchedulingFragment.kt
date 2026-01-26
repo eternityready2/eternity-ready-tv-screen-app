@@ -73,6 +73,17 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
         view.findViewById<View>(R.id.programguide_day_filter)?.visibility = View.GONE
         val constraintRoot = view.findViewById<ConstraintLayout>(R.id.programguide_constraint_root)
         constraintRoot.setBackgroundColor(Color.BLACK)
+
+        val imageView = view?.findViewById<ImageView>(R.id.programguide_detail_image) ?: return
+        imageView.scaleType = ImageView.ScaleType.FIT_XY
+
+        Glide.with(imageView)
+            .load(eternityR.drawable.logo_s)
+            .error(R.drawable.programguide_icon_placeholder)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(imageView)
+
         // Set bottom_detail height to 130dp after layout inflates
         view.post {
             setBottomDetailHeight(view)
@@ -108,16 +119,22 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
         // Ensure bottom_detail height stays 130dp on every selection
         view?.let { setBottomDetailHeight(it) }
 
+        imageView.scaleType = ImageView.ScaleType.FIT_XY
+
         if (innerSchedule != null) {
             Glide.with(imageView)
                 .load(innerSchedule.imageUrl)
-                .centerCrop()
                 .error(R.drawable.programguide_icon_placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageView)
         } else {
-            Glide.with(imageView).clear(imageView)
+            Glide.with(imageView)
+                .load(eternityR.drawable.logo_s)
+                .error(R.drawable.programguide_icon_placeholder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(imageView)
         }
     }
 
