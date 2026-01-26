@@ -99,6 +99,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:scrollHorizontally="false"
                 tools:text="This is the description of the item.\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8" />
 
         </LinearLayout>
