@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Button
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -87,6 +88,26 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
         // Set bottom_detail height to 115dp after layout inflates
         view.post {
             setBottomDetailHeight(view)
+
+            val menuMargin = view.findViewById<View>(R.id.programguide_menu_visible_margin)
+            menuMargin.layoutParams.height = (menuMargin.layoutParams.height / 2).toInt()
+            
+            val timelineMargin = view.findViewById<View>(R.id.programguide_timeline_row_negative_margin)
+            timelineMargin.layoutParams.width = (timelineMargin.layoutParams.width / 2).toInt()
+            
+            val timeOffset = view.findViewById<View>(R.id.programguide_current_time_indicator_top_offset)
+            timeOffset.layoutParams.height = (timeOffset.layoutParams.height / 2).toInt()
+
+            val timeRow = view.findViewById<View>(R.id.programguide_time_row)
+            val timeRowParams = timeRow.layoutParams as ViewGroup.MarginLayoutParams
+            timeRowParams.topMargin = 0
+            timeRowParams.topMargin = (25 * resources.displayMetrics.density).toInt()
+            timeRow.alpha = 1f
+            timeRow.isHorizontalFadingEdgeEnabled = false
+            timeRow.layoutParams = timeRowParams
+            
+            // Force layout refresh
+            view.requestLayout()
         }
     }
 
