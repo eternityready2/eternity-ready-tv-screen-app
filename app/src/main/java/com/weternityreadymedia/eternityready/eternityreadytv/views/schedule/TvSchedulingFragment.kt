@@ -33,6 +33,8 @@ import org.threeten.bp.ZoneId
 import java.util.Locale
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.graphics.Color
+import android.text.Html
+import android.text.method.LinkMovementMethod
 
 class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
     companion object {
@@ -133,7 +135,8 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
         metadataView?.text = programGuideSchedule?.program?.metadata
 
         val descriptionView = view?.findViewById<TextView>(R.id.programguide_detail_description)
-        descriptionView?.text = programGuideSchedule?.program?.description
+        descriptionView?.text = Html.fromHtml(programGuideSchedule?.program?.description ?: "", Html.FROM_HTML_MODE_COMPACT)
+        descriptionView?.movementMethod = LinkMovementMethod.getInstance()
 
         val imageView = view?.findViewById<ImageView>(R.id.programguide_detail_image) ?: return
 
@@ -179,7 +182,8 @@ class TvSchedulingFragment : ProgramGuideFragment<SimpleProgram>() {
             titleView?.text = channel.name
 
             val descriptionView = view?.findViewById<TextView>(R.id.programguide_detail_description)
-            descriptionView?.text = channel.description
+            descriptionView?.text = Html.fromHtml(channel.description ?: "", Html.FROM_HTML_MODE_COMPACT)
+            descriptionView?.movementMethod = LinkMovementMethod.getInstance()
 
             val imageView = view?.findViewById<ImageView>(R.id.programguide_detail_image) ?: return
             Glide.with(imageView)
